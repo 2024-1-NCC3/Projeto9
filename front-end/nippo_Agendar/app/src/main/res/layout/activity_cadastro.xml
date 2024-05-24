@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/telaCadastro"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tituloCadastro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="156dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="157dp"
+                android:fontFamily="monospace"
+                android:lineSpacingExtra="16sp"
+                android:text="Cadastro"
+                android:textAlignment="center"
+                android:textColor="#222222"
+                android:textSize="26sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nomeCadastro"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                android:hint="Nome Completo"
+                app:boxCornerRadiusBottomEnd="10sp"
+                app:boxCornerRadiusBottomStart="10sp"
+                app:boxCornerRadiusTopEnd="10sp"
+                app:boxCornerRadiusTopStart="10sp"
+                app:errorEnabled="true"
+                app:errorTextColor="@color/errorColor"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tituloCadastro">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputNomeCadastro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text|textAutoComplete"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/senhaCadastro"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="10sp"
+                app:boxCornerRadiusBottomStart="10sp"
+                app:boxCornerRadiusTopEnd="10sp"
+                app:boxCornerRadiusTopStart="10sp"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:errorEnabled="true"
+                app:errorTextColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/telefoneCadastro"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputSenhaCadastro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Senha"
+                    android:inputType="textPassword"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailCadastro"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:hint="Email"
+                app:boxCornerRadiusBottomEnd="10sp"
+                app:boxCornerRadiusBottomStart="10sp"
+                app:boxCornerRadiusTopEnd="10sp"
+                app:boxCornerRadiusTopStart="10sp"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:errorEnabled="true"
+                app:errorTextColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cpfCadastro">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputEmailCadastro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text|textEmailAddress|textAutoComplete"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="161dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="162dp"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:outlineProvider="none"
+                android:padding="0dp"
+                android:text="Fazer Login"
+                android:textAlignment="center"
+                android:textColor="#840606"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnCadastro" />
+
+            <Button
+                android:id="@+id/btnCadastro"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="#850606"
+                android:padding="15sp"
+                android:text="Cadastrar"
+                android:textStyle="bold"
+                app:cornerRadius="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textoTermoPrivacidade" />
+
+            <TextView
+                android:id="@+id/textoTermoPrivacidade"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Ao clicar em Cadastrar, você aceita nossos Termos de Serviços e confirma que leu nossa Política de Privacidade"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/senhaCadastro" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/telefoneCadastro"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:hint="Telefone"
+                app:boxCornerRadiusBottomEnd="10sp"
+                app:boxCornerRadiusBottomStart="10sp"
+                app:boxCornerRadiusTopEnd="10sp"
+                app:boxCornerRadiusTopStart="10sp"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:errorEnabled="true"
+                app:errorTextColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/emailCadastro">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputTelefoneCadastro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/cpfCadastro"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:hint="CPF"
+                app:boxCornerRadiusBottomEnd="10sp"
+                app:boxCornerRadiusBottomStart="10sp"
+                app:boxCornerRadiusTopEnd="10sp"
+                app:boxCornerRadiusTopStart="10sp"
+                app:boxStrokeErrorColor="@color/errorColor"
+                app:errorEnabled="true"
+                app:errorTextColor="@color/errorColor"
+                app:hintAnimationEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nomeCadastro">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputCpfCadastro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBarCadastro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
