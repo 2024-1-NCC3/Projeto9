@@ -38,13 +38,13 @@ app.post("/cadastro", [check("email").isEmail()], function (req, res) {
   }
 
   var nome = req.body.nome;
-  var email = req.body.email;
+  var email = req.body.email.toLowerCase(); // Converter e-mail para minúsculas
   var senha = req.body.senha;
   var telefone = req.body.telefone;
   var cpf = req.body.cpf;
 
   // Verificar se o e-mail já está cadastrado
-  var sqlSelect = `SELECT * FROM usuarios WHERE email = ?`;
+  var sqlSelect = `SELECT * FROM usuarios WHERE LOWER(email) = ?`; // Consulta com e-mail em minúsculas
   db.get(sqlSelect, [email], function (err, row) {
     if (err) {
       console.error("Erro ao verificar e-mail:", err);
@@ -89,10 +89,10 @@ app.post("/cadastro", [check("email").isEmail()], function (req, res) {
  * @returns {Object} Retorna uma mensagem indicando sucesso ou falha no login, junto com o ID do usuário.
  */
 app.post("/login", function (req, res) {
-  var email = req.body.email;
+  var email = req.body.email.toLowerCase(); // Converter e-mail para minúsculas
   var senha = req.body.senha;
 
-  var sqlSelect = `SELECT id, senha FROM usuarios WHERE email=?`;
+  var sqlSelect = `SELECT id, senha FROM usuarios WHERE LOWER(email)=?`; // Consulta com e-mail em minúsculas
   db.get(sqlSelect, [email], function (err, row) {
     if (err) {
       console.error("Erro ao buscar usuário:", err);
@@ -252,6 +252,7 @@ app.delete("/usuarios/:id", function (req, res) {
     res.send("Usuário excluído com sucesso!");
   });
 });
+
 app.get("/especialidades", function (req, res) {
   var sqlSelect = "SELECT * FROM especialidades";
   db.all(sqlSelect, [], function (err, rows) {
@@ -286,7 +287,9 @@ app.post("/agendamentos", function (req, res) {
       "Campos obrigatórios não fornecidos. Dados recebidos:",
       req.body,
     );
-    return res.status(400).send("Campos obrigatórios não fornecidos.");
+    return res
+      .status(400)
+      .json({ error: "Campos obrigatórios não fornecidos." });
   }
 
   var sqlInsert =
@@ -294,11 +297,46 @@ app.post("/agendamentos", function (req, res) {
   db.run(sqlInsert, [usuario_id, medico_id, data], function (err) {
     if (err) {
       console.error("Erro ao salvar agendamento:", err);
-      return res.status(500).send("Erro ao salvar agendamento: " + err);
+      return res
+        .status(500)
+        .json({ error: "Erro ao salvar agendamento: " + err });
     }
-    res.send("Agendamento salvo com sucesso!");
+
+    // Marcar o horário como indisponível após agendar
+    marcarIndisponivel(medico_id, data)
+      .then(() => {
+        res.json({ message: "Agendamento salvo com sucesso!" });
+      })
+      .catch((err) => {
+        console.error("Erro ao marcar horário como indisponível:", err);
+        res
+          .status(500)
+          .json({ error: "Erro ao marcar horário como indisponível: " + err });
+      });
   });
 });
+
+/**
+ * Função para marcar um horário como indisponível.
+ * @name marcarIndisponivel
+ * @function
+ * @param {string} medicoId - ID do médico.
+ * @param {string} data - Data do agendamento.
+ * @returns {Promise} Retorna uma promessa que resolve quando o horário é marcado como indisponível.
+ */
+function marcarIndisponivel(medicoId, data) {
+  return new Promise((resolve, reject) => {
+    var sqlUpdate =
+      "UPDATE horarios SET disponivel=0 WHERE medico_id=? AND data=?";
+    db.run(sqlUpdate, [medicoId, data], function (err) {
+      if (err) {
+        return reject(err);
+      }
+      resolve();
+    });
+  });
+}
+
 app.get("/horarios/:medicoId", function (req, res) {
   var medicoId = req.params.medicoId;
   var sqlSelect = "SELECT * FROM horarios WHERE medico_id=?";
@@ -307,6 +345,70 @@ app.get("/horarios/:medicoId", function (req, res) {
       return res.status(500).send("Erro ao buscar horários: " + err);
     }
     res.json(rows);
+  });
+});
+
+/**
+ * Rota para obter o histórico de consultas agendadas por um usuário.
+ * @name GET /agendamentos/:usuario_id
+ * @function
+ * @memberof module:API
+ * @param {string} usuario_id - ID do usuário.
+ * @returns {Array} Retorna uma lista de agendamentos do usuário.
+ */
+app.get("/agendamentos/:usuario_id", function (req, res) {
+  var usuario_id = req.params.usuario_id;
+
+  var sqlSelect = `
+    SELECT 
+      agendamentos.id, 
+      strftime('%d-%m-%Y %H:%M', agendamentos.data) AS data_formatada, 
+      medicos.nome AS medico_nome, 
+      especialidades.nome AS especialidade_nome
+    FROM agendamentos
+    JOIN medicos ON agendamentos.medico_id = medicos.id
+    JOIN especialidades ON medicos.especialidade_id = especialidades.id
+    WHERE agendamentos.usuario_id = ?
+  `;
+
+  db.all(sqlSelect, [usuario_id], function (err, rows) {
+    if (err) {
+      console.error("Erro ao buscar agendamentos:", err);
+      return res.status(500).send("Erro ao buscar agendamentos: " + err);
+    }
+    res.json(rows);
+  });
+});
+
+app.get("/ultimaconsulta/:usuario_id", function (req, res) {
+  var usuario_id = req.params.usuario_id;
+  var dataAtual = new Date().toISOString(); // Obtém a data e hora atual em formato ISO
+
+  var sqlSelect = `
+    SELECT 
+      agendamentos.id, 
+      strftime('%d-%m-%Y %H:%M', agendamentos.data) AS data,
+      medicos.nome AS medico_nome, 
+      especialidades.nome AS especialidade_nome
+    FROM agendamentos
+    JOIN medicos ON agendamentos.medico_id = medicos.id
+    JOIN especialidades ON medicos.especialidade_id = especialidades.id
+    WHERE agendamentos.usuario_id = ? AND agendamentos.data > ?
+    ORDER BY agendamentos.data ASC
+    LIMIT 1
+  `;
+
+  db.get(sqlSelect, [usuario_id, dataAtual], function (err, row) {
+    if (err) {
+      console.error("Erro ao buscar a última consulta futura:", err);
+      return res.status(500).send("Erro ao buscar a última consulta futura: " + err);
+    }
+
+    if (!row) {
+      return res.status(404).send("Nenhuma consulta futura encontrada");
+    }
+
+    res.json(row);
   });
 });
 

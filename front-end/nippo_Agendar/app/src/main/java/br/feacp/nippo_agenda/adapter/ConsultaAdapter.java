@@ -41,14 +41,51 @@ public class ConsultaAdapter extends RecyclerView.Adapter<ConsultaAdapter.Consul
         holder.especialidadeNomeTextView.setText(consulta.getEspecialidadeNome());
         holder.dataTextView.setText(consulta.getData());
 
-        if (!consulta.isFoiAtendido()) {
-            // Se a consulta não foi atendida, exibe os botões de confirmação e cancelamento
-            holder.confirmaPresencaButton.setVisibility(View.VISIBLE);
-            holder.cancelaConsultaButton.setVisibility(View.VISIBLE);
-        } else {
-            // Caso contrário, oculta os botões
+        // Verifica se a consulta foi confirmada
+        if (consulta.isFoiAtendido()) {
+            // Define o status da consulta confirmada
+            holder.statusTextView.setText("Consulta Confirmada");
+            holder.statusTextView.setVisibility(View.VISIBLE);
+
+            // Oculta os botões de confirmação e cancelamento
             holder.confirmaPresencaButton.setVisibility(View.GONE);
             holder.cancelaConsultaButton.setVisibility(View.GONE);
+        } else {
+            holder.statusTextView.setVisibility(View.GONE);
+
+            // Configura o clique do botão para confirmar a consulta
+            holder.confirmaPresencaButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Atualiza o status da consulta
+                    consulta.setFoiAtendido(true);
+                    // Define o status da consulta confirmada
+                    holder.statusTextView.setText("Consulta Confirmada");
+                    holder.statusTextView.setVisibility(View.VISIBLE);
+                    // Oculta os botões de confirmação e cancelamento
+                    holder.confirmaPresencaButton.setVisibility(View.GONE);
+                    holder.cancelaConsultaButton.setVisibility(View.GONE);
+                }
+            });
+
+            // Configura o clique do botão para cancelar a consulta
+            holder.cancelaConsultaButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Atualiza o status da consulta
+                    consulta.setFoiAtendido(true);
+                    // Define o status da consulta cancelada
+                    holder.statusTextView.setText("Consulta Cancelada");
+                    holder.statusTextView.setVisibility(View.VISIBLE);
+                    // Oculta os botões de confirmação e cancelamento
+                    holder.confirmaPresencaButton.setVisibility(View.GONE);
+                    holder.cancelaConsultaButton.setVisibility(View.GONE);
+                }
+            });
+
+            // Exibe os botões de confirmação e cancelamento
+            holder.confirmaPresencaButton.setVisibility(View.VISIBLE);
+            holder.cancelaConsultaButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -61,6 +98,7 @@ public class ConsultaAdapter extends RecyclerView.Adapter<ConsultaAdapter.Consul
         TextView medicoNomeTextView;
         TextView especialidadeNomeTextView;
         TextView dataTextView;
+        TextView statusTextView;
         Button confirmaPresencaButton;
         Button cancelaConsultaButton;
 
@@ -69,6 +107,7 @@ public class ConsultaAdapter extends RecyclerView.Adapter<ConsultaAdapter.Consul
             medicoNomeTextView = itemView.findViewById(R.id.medicoNomeTextView);
             especialidadeNomeTextView = itemView.findViewById(R.id.especialidadeNomeTextView);
             dataTextView = itemView.findViewById(R.id.dataTextView);
+            statusTextView = itemView.findViewById(R.id.statusTextView);
             confirmaPresencaButton = itemView.findViewById(R.id.confirmaPresencaButton);
             cancelaConsultaButton = itemView.findViewById(R.id.cancelaConsultaButton);
         }

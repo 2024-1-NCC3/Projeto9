@@ -129,7 +129,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/btncancelar"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/exposedDropdownData"
-                app:layout_constraintWidth_percent="0.6" />
+                app:layout_constraintWidth_percent="0.5" />
 
             <Button
                 android:id="@+id/btncancelar"
@@ -141,7 +141,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btnagendar"
                 app:layout_constraintTop_toBottomOf="@+id/exposedDropdownData"
-                app:layout_constraintWidth_percent="0.3" />
+                app:layout_constraintWidth_percent="0.5" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

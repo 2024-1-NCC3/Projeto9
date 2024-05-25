@@ -44,7 +44,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tipsImageView"
         app:srcCompat="@drawable/ic_agenda" />
@@ -67,6 +67,7 @@
         android:id="@+id/nextAppointmentDateTimeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:fontFamily="@font/montserrat_semibold"
         android:textColor="#000000"
@@ -76,19 +77,19 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/infoCardView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="381dp"
+        android:layout_height="155dp"
         android:layout_margin="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="54dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/scheduleButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nextAppointmentIcon">
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="146dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -107,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Localização: Rua Fagundes Filho, 141, CJ66 Bairro São Judas, São Paulo"
+                android:text="Rua Fagundes Filho, 141, CJ66 Bairro São Judas, São Paulo"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -141,11 +142,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="111dp"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="111dp"
+        android:layout_marginBottom="24dp"
         android:text="Agendar Consulta"
+        app:cornerRadius="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/infoCardView" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

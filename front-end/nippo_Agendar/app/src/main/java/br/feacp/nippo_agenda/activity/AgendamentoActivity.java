@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -30,12 +29,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import br.feacp.nippo_agenda.R;
@@ -250,17 +245,7 @@ public class AgendamentoActivity extends AppCompatActivity {
                             JSONObject jsonObject = response.getJSONObject(i);
                             if (jsonObject.has("data") && jsonObject.has("hora")) {
                                 String dataHorario = jsonObject.getString("data") + " " + jsonObject.getString("hora");
-                                // Formatar a data
-                                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                                SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
-                                try {
-                                    Date data = inputFormat.parse(dataHorario);
-                                    String dataFormatada = outputFormat.format(data);
-                                    datas.add(dataFormatada);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                    Log.e("AgendamentoActivity", "Erro ao formatar data: " + e.getMessage());
-                                }
+                                datas.add(dataHorario);
                             } else {
                                 Log.e("AgendamentoActivity", "Objeto JSON inválido encontrado: " + jsonObject.toString());
                             }
@@ -309,12 +294,7 @@ public class AgendamentoActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (error instanceof ServerError && error.networkResponse.statusCode == 409) {
-                            // Consulta já agendada para o mesmo usuário, médico e data
-                            Toast.makeText(AgendamentoActivity.this, "Você já possui uma consulta agendada para essa data e médico.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.e("AgendamentoActivity", "Erro na solicitação POST: " + error.toString());
-                        }
+                        Log.e("AgendamentoActivity", "Erro na solicitação POST: " + error.toString());
                     }
                 });
 

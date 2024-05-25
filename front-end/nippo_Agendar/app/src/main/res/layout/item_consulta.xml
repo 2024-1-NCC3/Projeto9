@@ -57,6 +57,15 @@
             android:textColor="#FFF"
             android:visibility="gone" />
 
+        <TextView
+            android:id="@+id/statusTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#666"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

@@ -30,6 +30,7 @@ import java.util.Locale;
 
 import br.feacp.nippo_agenda.R;
 import br.feacp.nippo_agenda.utils.BottomNavigationUtil;
+import br.feacp.nippo_agenda.utils.SharedPreferencesManager;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView tipsImageView;
@@ -56,7 +57,13 @@ public class MainActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         // Carrega a última consulta agendada
-        loadLastAppointment();
+        String userId = SharedPreferencesManager.getUserId(MainActivity.this);
+        if (userId != null) {
+            loadLastAppointment(userId);
+        } else {
+            // Trate o caso em que o ID do usuário não está disponível
+            Toast.makeText(MainActivity.this, "ID do usuário não encontrado.", Toast.LENGTH_SHORT).show();
+        }
 
         Button agendarButton = findViewById(R.id.scheduleButton);
         agendarButton.setOnClickListener(new View.OnClickListener() {
@@ -83,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
         }, 3000);
     }
 
-    private void loadLastAppointment() {
-        String url = "https://xjhck8-3001.csb.app/ultimaconsulta/userId";
+    private void loadLastAppointment(String userId) {
+        String url = "https://xjhck8-3001.csb.app/ultimaconsulta/" + userId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -93,19 +100,10 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             if (response.has("data")) {
                                 String dataConsultaString = response.getString("data");
-                                // Formatar a data
-                                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                                SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                                try {
-                                    Date dataConsulta = inputFormat.parse(dataConsultaString);
-                                    String dataConsultaFormatted = outputFormat.format(dataConsulta);
 
-                                    TextView nextAppointmentDateTimeTextView = findViewById(R.id.nextAppointmentDateTimeTextView);
-                                    nextAppointmentDateTimeTextView.setText(dataConsultaFormatted);
-                                } catch (ParseException e) {
-                                    Log.e("MainActivity", "Erro ao parsear data: " + e.getMessage());
-                                    Toast.makeText(MainActivity.this, "Erro ao processar a data.", Toast.LENGTH_SHORT).show();
-                                }
+                                // Exibe apenas a data da consulta
+                                TextView nextAppointmentDateTextView = findViewById(R.id.nextAppointmentDateTimeTextView);
+                                nextAppointmentDateTextView.setText(dataConsultaString);
                             } else {
                                 Toast.makeText(MainActivity.this, "Nenhuma consulta encontrada.", Toast.LENGTH_SHORT).show();
                             }
@@ -124,4 +122,5 @@ public class MainActivity extends AppCompatActivity {
 
         requestQueue.add(jsonObjectRequest);
     }
+
 }

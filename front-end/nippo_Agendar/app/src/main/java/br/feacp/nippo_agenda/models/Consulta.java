@@ -13,14 +13,16 @@ public class Consulta {
         this.data = data;
         this.foiAtendido = foiAtendido;
     }
+
+    // Construtor sem o status de atendimento (foiAtendido)
     public Consulta(String medicoNome, String especialidadeNome, String data) {
         this.medicoNome = medicoNome;
         this.especialidadeNome = especialidadeNome;
         this.data = data;
-        this.foiAtendido = false; // ou qualquer valor padrão que você deseja definir
+        this.foiAtendido = false;
     }
 
-    // Getters e Setters
+    // Getters
     public String getMedicoNome() {
         return medicoNome;
     }
@@ -36,5 +38,9 @@ public class Consulta {
     public boolean isFoiAtendido() {
         return foiAtendido;
     }
-}
 
+    // Setters
+    public void setFoiAtendido(boolean foiAtendido) {
+        this.foiAtendido = foiAtendido;
+    }
+}
