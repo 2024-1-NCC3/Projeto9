@@ -1,34 +1,45 @@
 package br.feacp.nippo_agenda.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import br.feacp.nippo_agenda.R;
+import br.feacp.nippo_agenda.utils.BottomNavigationUtil;
 import br.feacp.nippo_agenda.utils.SharedPreferencesManager;
 
 public class AgendamentoActivity extends AppCompatActivity {
@@ -67,7 +78,19 @@ public class AgendamentoActivity extends AppCompatActivity {
             return;
         }
 
+        // Configure o BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        BottomNavigationUtil.setupBottomNavigationView(this, bottomNavigationView);
+
         loadEspecialidades();
+        ImageButton backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Volta para MainActivity
+                finish();
+            }
+        });
 
         btncancelar.setOnClickListener(v -> {
             Intent intent = new Intent(AgendamentoActivity.this, MainActivity.class);
@@ -77,7 +100,7 @@ public class AgendamentoActivity extends AppCompatActivity {
 
         btnagendar.setOnClickListener(v -> {
             if (camposPreenchidos()) {
-                agendarConsulta();
+                showConfirmationDialog(); // Chamar o método para mostrar o dialog de confirmação
             } else {
                 Toast.makeText(this, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT).show();
             }
@@ -88,6 +111,36 @@ public class AgendamentoActivity extends AppCompatActivity {
         return !autoCompleteEspecialidade.getText().toString().isEmpty() &&
                 !autoCompleteMedico.getText().toString().isEmpty() &&
                 !autoCompleteData.getText().toString().isEmpty();
+    }
+
+    private void showConfirmationDialog() {
+        // Capturar os valores selecionados
+        String especialidade = autoCompleteEspecialidade.getText().toString();
+        String medico = autoCompleteMedico.getText().toString();
+        String data = autoCompleteData.getText().toString();
+
+        // Construir a mensagem de confirmação
+        String mensagem = "Tem certeza de que deseja agendar esta consulta?\n\n" +
+                "Especialidade: " + especialidade + "\n" +
+                "Médico: " + medico + "\n" +
+                "Data: " + data;
+
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmar Agendamento")
+                .setMessage(mensagem)
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Integer medicoId = medicoMap.get(medico);
+
+                        if (medicoId != null) {
+                            agendarConsulta(userId, String.valueOf(medicoId), data);
+                        } else {
+                            Toast.makeText(context, "Médico inválido.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Não", null)
+                .show();
     }
 
     private void loadEspecialidades() {
@@ -197,7 +250,17 @@ public class AgendamentoActivity extends AppCompatActivity {
                             JSONObject jsonObject = response.getJSONObject(i);
                             if (jsonObject.has("data") && jsonObject.has("hora")) {
                                 String dataHorario = jsonObject.getString("data") + " " + jsonObject.getString("hora");
-                                datas.add(dataHorario);
+                                // Formatar a data
+                                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                                SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+                                try {
+                                    Date data = inputFormat.parse(dataHorario);
+                                    String dataFormatada = outputFormat.format(data);
+                                    datas.add(dataFormatada);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                    Log.e("AgendamentoActivity", "Erro ao formatar data: " + e.getMessage());
+                                }
                             } else {
                                 Log.e("AgendamentoActivity", "Objeto JSON inválido encontrado: " + jsonObject.toString());
                             }
@@ -219,54 +282,42 @@ public class AgendamentoActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-
-    private void agendarConsulta() {
+    private void agendarConsulta(String usuarioId, String medicoId, String data) {
         String url = "https://xjhck8-3001.csb.app/agendamentos";
 
-        String selectedMedico = autoCompleteMedico.getText().toString();
-        Integer medicoId = medicoMap.get(selectedMedico);
-        String data = autoCompleteData.getText().toString();
-
-        if (medicoId == null || data.isEmpty()) {
-            Toast.makeText(context, "Erro ao obter dados do médico ou data", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        JSONObject agendamento = new JSONObject();
+        JSONObject jsonBody = new JSONObject();
         try {
-            agendamento.put("usuario_id", userId);
-            agendamento.put("medico_id", medicoId);
-            agendamento.put("data", data);
-            Log.d("AgendamentoActivity", "Dados do agendamento: " + agendamento.toString());
+            jsonBody.put("usuario_id", usuarioId);
+            jsonBody.put("medico_id", medicoId);
+            jsonBody.put("data", data);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.POST,
-                url,
-                agendamento,
-                response -> {
-                    Toast.makeText(context, "Agendamento salvo com sucesso!", Toast.LENGTH_SHORT).show();
-                    Log.d("AgendamentoActivity", "Resposta do servidor: " + response.toString());
-                },
-                error -> {
-                    error.printStackTrace();
-                    Toast.makeText(context, "Erro ao salvar agendamento: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.e("AgendamentoActivity", "Erro na solicitação POST: " + error.getMessage());
-                    if (error.networkResponse != null) {
-                        Log.e("AgendamentoActivity", "Código de resposta: " + error.networkResponse.statusCode);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
                         try {
-                            String responseBody = new String(error.networkResponse.data, "utf-8");
-                            Log.e("AgendamentoActivity", "Resposta do servidor: " + responseBody);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            String message = response.getString("message");
+                            Log.i("AgendamentoActivity", "Resposta do servidor: " + message);
+                            Toast.makeText(AgendamentoActivity.this, message, Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            Log.e("AgendamentoActivity", "Erro ao processar resposta JSON: " + e.getMessage());
                         }
                     }
-                }
-        );
-        requestQueue.add(request);
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error instanceof ServerError && error.networkResponse.statusCode == 409) {
+                            // Consulta já agendada para o mesmo usuário, médico e data
+                            Toast.makeText(AgendamentoActivity.this, "Você já possui uma consulta agendada para essa data e médico.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e("AgendamentoActivity", "Erro na solicitação POST: " + error.toString());
+                        }
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
     }
-
 }
-

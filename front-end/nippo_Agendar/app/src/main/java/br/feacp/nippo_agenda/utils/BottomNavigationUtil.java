@@ -2,6 +2,7 @@ package br.feacp.nippo_agenda.utils;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 
 import br.feacp.nippo_agenda.R;
 import br.feacp.nippo_agenda.activity.AgendamentoActivity;
+import br.feacp.nippo_agenda.activity.HistoricoActivity;
 import br.feacp.nippo_agenda.activity.MainActivity;
 import br.feacp.nippo_agenda.activity.PerfilActivity;
 
@@ -18,23 +20,26 @@ public class BottomNavigationUtil {
 
     static {
         navigationMap.put(R.id.nav_home, MainActivity.class);
+        navigationMap.put(R.id.nav_historic, HistoricoActivity.class); // Adicionando a tela de histórico
         navigationMap.put(R.id.nav_agenda, AgendamentoActivity.class);
         navigationMap.put(R.id.nav_user, PerfilActivity.class);
     }
 
     public static void setupBottomNavigationView(Activity activity, BottomNavigationView bottomNavigationView) {
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            Class<?> activityClass = navigationMap.get(item.getItemId());
-            if (activityClass != null) {
-                if (!activityClass.equals(activity.getClass())) {
-                    // Removido o código que finaliza a atividade atual
-                    Intent intent = new Intent(activity, activityClass);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    activity.startActivity(intent);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                Class<?> activityClass = navigationMap.get(item.getItemId());
+                if (activityClass != null) {
+                    if (!activityClass.equals(activity.getClass())) {
+                        Intent intent = new Intent(activity, activityClass);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        activity.startActivity(intent);
+                    }
+                    return true;
                 }
-                return true;
+                return false;
             }
-            return false;
         });
 
         // Marcar o item correto como selecionado

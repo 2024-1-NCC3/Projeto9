@@ -45,7 +45,7 @@
                 android:fontFamily="@font/montserrat_semibold"
                 android:text="Agendamento"
                 android:textColor="#0C0C0C"
-                android:textSize="16sp"
+                android:textSize="19sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -57,7 +57,7 @@
                 android:layout_marginTop="16dp"
                 android:text="AGENDE DE FORMA RAPIDA A SUA CONSULTA"
                 android:textColor="#000000"
-                android:textSize="20sp"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -106,7 +106,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Data"
+                android:hint="Data e hora"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/exposedDropdownMedico">
@@ -123,23 +123,25 @@
                 android:id="@+id/btnagendar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="123dp"
+                android:layout_marginTop="100dp"
                 android:text="Agendar"
+                app:cornerRadius="15sp"
                 app:layout_constraintEnd_toStartOf="@+id/btncancelar"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/exposedDropdownData"
-                app:layout_constraintWidth_percent="0.5" />
+                app:layout_constraintWidth_percent="0.6" />
 
             <Button
                 android:id="@+id/btncancelar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="123dp"
+                android:layout_marginTop="100dp"
                 android:text="Cancelar"
+                app:cornerRadius="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btnagendar"
                 app:layout_constraintTop_toBottomOf="@+id/exposedDropdownData"
-                app:layout_constraintWidth_percent="0.5" />
+                app:layout_constraintWidth_percent="0.3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
